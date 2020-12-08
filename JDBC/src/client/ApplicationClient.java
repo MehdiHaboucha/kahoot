@@ -25,7 +25,7 @@ public class ApplicationClient extends JFrame implements ActionListener {
     private JLabel pseudo=new JLabel("Pseudo");
     private JTextArea textAreaInfo= new JTextArea();
     private JTextField nameFieldPseudo=new JTextField("");
-    private BufferedReader reader;
+    private ObjectInputStream ois;
     private PrintWriter writer;
     private Ecouteur listener;
     private int idPartie;
@@ -87,7 +87,7 @@ public class ApplicationClient extends JFrame implements ActionListener {
         // call onCancel() on ESCAPE
         panel.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         
-        listener = new Ecouteur(reader, textAreaInfo,this);
+        listener = new Ecouteur(ois, textAreaInfo,this);
         listener.start();	
       //Et enfin, la rendre visible
     	this.setVisible(true); 
@@ -126,8 +126,8 @@ public class ApplicationClient extends JFrame implements ActionListener {
         try {
             client = new Socket(InetAddress.getLocalHost(), 60000);
             // read
-            InputStreamReader input = new InputStreamReader(this.client.getInputStream());
-            reader = new BufferedReader(input);
+            InputStream is = client.getInputStream();
+            ois = new ObjectInputStream(is);
             // write
             OutputStreamWriter output = new OutputStreamWriter(this.client.getOutputStream());
             writer = new PrintWriter(output);
@@ -190,6 +190,13 @@ public class ApplicationClient extends JFrame implements ActionListener {
 
   	public void setIdPartie(int idPartie) {
   		this.idPartie = idPartie;
+  	}
+	public int getIdJoueur() {
+  		return idJoueur;
+  	}
+
+  	public void setIdJoueur(int idJoueur) {
+  		this.idJoueur = idJoueur;
   	}
     
     @SuppressWarnings("deprecation")
