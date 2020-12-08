@@ -1,36 +1,41 @@
 package client;
 
+import Kahoot.Connexion;
+
 import javax.swing.*;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class Ecouteur extends Thread {
-    private BufferedReader reader;
+    private ObjectInputStream ois;
     private JTextArea textArea;
     private ApplicationClient client;
     
 
-    public Ecouteur(BufferedReader reader, JTextArea textArea,ApplicationClient client) {
-        this.reader = reader;
+    public Ecouteur(ObjectInputStream ois, JTextArea textArea,ApplicationClient client) {
+        this.ois = ois;
         this.textArea = textArea;
         this.client=client;
     }
 
     @Override
     public void run() {
-        String msg;
+        Object obj;
         try {
-            while (!Thread.currentThread().isInterrupted() && (msg = reader.readLine()) != null) {
-                System.out.println("Client : " + msg);
-                //textArea.append(msg + "\n");
-                if (Integer.parseInt(msg)>=0) {
-                	client.setIdPartie(Integer.parseInt(msg));
-					client.Authentified();
-				}
-                if (msg=="LANCE") {
-					client.partieLance();
-				}
+            while (!Thread.currentThread().isInterrupted() && (obj = ois.readObject())!= null) {
+		    if (obj instanceof Connexion){
+		    Connexion con = (Connexion) obj;
+		    monApp.setIdPartie(con.getIdPartie());
+		    monApp.setIdPartie(con.getIdJoueur());
+		    monApp.authentified();
+                }
+             
+                if (obj instanceof String) {
+			 String msg = (String) obj;
+			if(msg == "LANCE"){
+				client.partieLance();
+			}
+		}
             }
         } catch (IOException e) {
             e.printStackTrace();
