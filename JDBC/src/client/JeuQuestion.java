@@ -243,7 +243,7 @@ public class JeuQuestion implements ActionListener{
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+3,idJoueur, partie.getidPartie());
 					dao.Historique(idJoueur, partie.getidPartie(), lq.get(i).getIdQuestion(), reponse, 3);
-					score.setText("Score Question:"+3+"Score Total"+dao.getScore(idJoueur, partie.getidPartie()));
+					score.setText("Score Question: "+3+"Score Total: "+dao.getScore(idJoueur, partie.getidPartie()));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -254,7 +254,7 @@ public class JeuQuestion implements ActionListener{
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+0,idJoueur, partie.getidPartie());
 					dao.Historique(idJoueur, partie.getidPartie(), lq.get(i).getIdQuestion(), 0, 0);
-					score.setText("Score Question:"+0+"   Score Total"+dao.getScore(idJoueur, partie.getidPartie()));
+					score.setText("Score Question: "+0+"   Score Total: "+dao.getScore(idJoueur, partie.getidPartie()));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -264,7 +264,7 @@ public class JeuQuestion implements ActionListener{
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+0,idJoueur, partie.getidPartie());
 					dao.Historique(idJoueur, partie.getidPartie(), lq.get(i).getIdQuestion(),reponse, 0);
-					score.setText("Score Question:"+0+"   Score Total"+dao.getScore(idJoueur, partie.getidPartie()));
+					score.setText("Score Question: "+0+"   Score Total: "+dao.getScore(idJoueur, partie.getidPartie()));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
