@@ -30,11 +30,11 @@ public class JeuKahoot extends JFrame implements ActionListener   {
 	 public JeuKahoot(int idPartie,int idJoueur) throws ClassNotFoundException, SQLException{
 	        
 	        //*********************Jframe*************************
-	   //Définit un titre pour notre fenêtre
+	   //DÃ©finit un titre pour notre fenÃªtre
 	this.setTitle("Jeu Kahoot");
-	//Définit sa taille : 400 pixels de large et 100 pixels de haut
+	//DÃ©finit sa taille : 400 pixels de large et 100 pixels de haut
 	this.setSize(600, 300);
-	//Nous demandons maintenant à notre objet de se positionner au centre
+	//Nous demandons maintenant Ã  notre objet de se positionner au centre
 	this.setLocationRelativeTo(null);
 	//Termine le processus lorsqu'on clique sur la croix rouge
 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,13 +43,13 @@ public class JeuKahoot extends JFrame implements ActionListener   {
 	this.setResizable(false);
 	//garder la fenetre au premier plan
 	//this.setAlwaysOnTop(true);
-	//Retirer les contours et les boutons de contrôle
+	//Retirer les contours et les boutons de contrÃ´le
 	//this.setUndecorated(true);	
-	//Définition de sa couleur de fond
+	//DÃ©finition de sa couleur de fond
 	//pan.setBackground(Color.ORANGE);
 	panel.add(question);
 	this.setContentPane(panel);
-	//Ajout du bouton à notre content pane
+	//Ajout du bouton Ã  notre content pane
 	
 	reponses.add(new Bouton("A"));
 	reponses.add(new Bouton("B"));
@@ -96,19 +96,19 @@ public class JeuKahoot extends JFrame implements ActionListener   {
 			System.out.println(p.getIdCategorie());
 			 lq=dao.listerQuestionsByCategorie(p.getIdCategorie());
 			 System.out.println(lq);
-			//Teamps d'attente pour répondre
+			//Teamps d'attente pour rÃ©pondre
 			  int delay = 6000;
 			  int i=0;
 			  
-			  //class action listener laquelle on va gérer le temps entre les fonctions
+			  //class action listener laquelle on va gÃ©rer le temps entre les fonctions
 			 JeuQuestion q= new JeuQuestion(p,lq,lr,i,reponses,question,score,idJoueur);
 			 
 			 Timer timer = new Timer( delay,q);
 			 timer.setRepeats(true);
-			 //récuperer les réponses pour chaque question
+			 //rÃ©cuperer les rÃ©ponses pour chaque question
 			 lr=dao.ListerReponseByQuestion(lq.get(0).getIdQuestion());
 			 
-			 //affichage initial: première question
+			 //affichage initial: premiÃ¨re question
 			 question.setText("categorie:"+lq.get(0).getIdCategorie()+"    Q"+1+"- "+lq.get(0).getTextQuestion());
 				 reponses.get(0).setLabel(lr.get(0).getTextReponse());
 				  reponses.get(1).setLabel(lr.get(1).getTextReponse());
@@ -124,14 +124,14 @@ public class JeuKahoot extends JFrame implements ActionListener   {
 		 public void actionPerformed(ActionEvent arg0) {
 			 if(arg0.getSource()==reponses.get(0)) {
 				 // reponses.get(0).setBackground(Color.blue);
-				 	System.out.println("zebi");
+				 	
 				 reponses.get(0).setBackground(Color.blue);
 				//changer la couleur de text du bouton
 				 reponses.get(0).setForeground(Color.WHITE);
 				 reponses.get(1).setEnabled(false);
 				 reponses.get(2).setEnabled(false);
 				 reponses.get(3).setEnabled(false);
-				//reponses.get(0).setLabel("thawa");
+				
 						
 				 
 			 }
