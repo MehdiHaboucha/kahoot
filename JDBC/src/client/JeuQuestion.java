@@ -154,6 +154,7 @@ public class JeuQuestion implements ActionListener{
 				if (lq.size()>i) {
 					try {
 						lr=new RequetteBddKahoot().ListerReponseByQuestion(lq.get(i).getIdQuestion());
+						score.setText("Score Total: "+new RequetteBddKahoot().getScore(idJoueur, partie.getidPartie()));
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -164,6 +165,7 @@ public class JeuQuestion implements ActionListener{
 				}
 				int j=i+1;
 				System.out.println("18s----------");
+				
 				//reponses.get(0).setBackground(Color.red);
 				if(i<lq.size()) {
 					System.out.println(i);
@@ -233,10 +235,10 @@ public class JeuQuestion implements ActionListener{
 			}
 			
 			
-			//change la couleur de la réponse  si bonne réponse en vert et mauvaise réponse en rouge
-			//renvoie l'id de la réponse que le joueur a choisi
+			//change la couleur de la rÃ©ponse  si bonne rÃ©ponse en vert et mauvaise rÃ©ponse en rouge
+			//renvoie l'id de la rÃ©ponse que le joueur a choisi
 			reponse=AllumerBouton(lq,lr,reponses);
-			// si c'est une bonne réponse
+			// si c'est une bonne rÃ©ponse
 			if (lq.get(i).getidbonneReponse()==reponse) {
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+3,idJoueur, partie.getidPartie());
@@ -247,12 +249,12 @@ public class JeuQuestion implements ActionListener{
 					e1.printStackTrace();
 				}
 			}
-			//si c'est une mauvaise réponse
+			//si c'est une mauvaise rÃ©ponse
 			else if (reponse== -1) {
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+0,idJoueur, partie.getidPartie());
 					dao.Historique(idJoueur, partie.getidPartie(), lq.get(i).getIdQuestion(), 0, 0);
-					score.setText("Score Question:"+0+"Score Total"+dao.getScore(idJoueur, partie.getidPartie()));
+					score.setText("Score Question:"+0+"   Score Total"+dao.getScore(idJoueur, partie.getidPartie()));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -262,7 +264,7 @@ public class JeuQuestion implements ActionListener{
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+0,idJoueur, partie.getidPartie());
 					dao.Historique(idJoueur, partie.getidPartie(), lq.get(i).getIdQuestion(),reponse, 0);
-					score.setText("Score Question:"+0+"--------Score Total"+dao.getScore(idJoueur, partie.getidPartie()));
+					score.setText("Score Question:"+0+"   Score Total"+dao.getScore(idJoueur, partie.getidPartie()));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
