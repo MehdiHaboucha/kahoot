@@ -2,6 +2,8 @@ package Kahoot;
 
 import server.Connexion;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,7 +12,7 @@ import java.util.Scanner;
 
 import dao.RequetteBddKahoot;
 
-public class Partie extends Thread implements Runnable{
+public class Partie extends Thread implements Runnable,Serializable{
     private int idPartie;
     private java.sql.Date date;
     private List<Connexion> mesConnexions = new ArrayList<>();
@@ -92,7 +94,7 @@ public class Partie extends Thread implements Runnable{
     	this.creee = true;
     	List<Categorie>lc= new ArrayList<Categorie>();
         RequetteBddKahoot dao=new RequetteBddKahoot();
-        lc=dao.listerCategorie();
+        lc=dao.listerCategorie();	
         System.out.println(lc);
         Scanner sc = new Scanner(System.in);
         System.out.println("quel sera l'id de la categorie de la partie?");
@@ -107,7 +109,12 @@ public class Partie extends Thread implements Runnable{
     public void run(){
         this.EnCours = true;
         for (Connexion connexion : mesConnexions) {
-        	 connexion.partieLance();
+        	 try {
+				connexion.partieLance();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         	 
 		}
      
@@ -119,16 +126,33 @@ public class Partie extends Thread implements Runnable{
             	
                // System.out.println(nbJoueurs);
                 //System.out.println(idCategorie);
-                sleep(10000);
+            	;
+                sleep((6000+3000)*new RequetteBddKahoot().listerQuestionsByCategorie(this.idCategorie).size());
+                for (Connexion connexion : mesConnexions) {
+                  	 try {
+           				connexion.partieFini();
+           			} catch (IOException e) {
+           				// TODO Auto-generated catch block
+           				e.printStackTrace();
+           			}
+                  	 
+           		}
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            } catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             this.interrupt();
             this.mesConnexions.clear();
         }
         System.out.println("sortie partie");
         this.EnCours = false;
         this.creee = false;
+      
     }
 
 	@Override

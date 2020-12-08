@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -126,7 +128,7 @@ public class JeuQuestion implements ActionListener{
 		//4eme cas le joueur appui sur le bouton d
 		if(reponses.get(3).isEnabled()==true && reponses.get(3).getBackground()==Color.blue ) {
 
-			if(lr.get(2).getIdReponse()==lq.get(i).getidbonneReponse()) {
+			if(lr.get(3).getIdReponse()==lq.get(i).getidbonneReponse()) {
 				reponses.get(3).setBackground(Color.green);
 				reponses.get(2).setEnabled(false);
 				return lr.get(3).getIdReponse();
@@ -162,6 +164,14 @@ public class JeuQuestion implements ActionListener{
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					 Collections.sort(lr, new Comparator<Reponse>() {
+
+							@Override
+							public int compare(Reponse o1, Reponse o2) {
+								// TODO Auto-generated method stub
+								return o1.getTextReponse().compareTo(o2.getTextReponse());
+							}
+						});
 				}
 				int j=i+1;
 				System.out.println("18s----------");
@@ -181,11 +191,17 @@ public class JeuQuestion implements ActionListener{
 					}
 				}
 				else{
-					label.setText("vous avez fini");
+					label.setText("vous avez fini.");
 					reponses.get(0).setVisible(false);
 					reponses.get(1).setVisible(false);
 					reponses.get(2).setVisible(false);
 					reponses.get(3).setVisible(false);
+					try {
+						score.setText("Votre Score Total est de: "+new RequetteBddKahoot().getScore(idJoueur, partie.getidPartie())+"sur "+lq.size()*3);
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					//partie fini
 					
 					((Timer) e.getSource()).stop();
@@ -224,7 +240,15 @@ public class JeuQuestion implements ActionListener{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			Collections.sort(lr, new Comparator<Reponse>() {
 
+				@Override
+				public int compare(Reponse o1, Reponse o2) {
+					// TODO Auto-generated method stub
+					return o1.getTextReponse().compareTo(o2.getTextReponse());
+				}
+			});
+			System.out.println(lr);
 			try {
 				dao.attribuerScore(700,3,1);
 				System.out.println("vrai");
@@ -235,10 +259,10 @@ public class JeuQuestion implements ActionListener{
 			}
 			
 			
-			//change la couleur de la rÃ©ponse  si bonne rÃ©ponse en vert et mauvaise rÃ©ponse en rouge
-			//renvoie l'id de la rÃ©ponse que le joueur a choisi
+			//change la couleur de la réponse  si bonne réponse en vert et mauvaise réponse en rouge
+			//renvoie l'id de la réponse que le joueur a choisi
 			reponse=AllumerBouton(lq,lr,reponses);
-			// si c'est une bonne rÃ©ponse
+			// si c'est une bonne réponse
 			if (lq.get(i).getidbonneReponse()==reponse) {
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+3,idJoueur, partie.getidPartie());
@@ -249,7 +273,7 @@ public class JeuQuestion implements ActionListener{
 					e1.printStackTrace();
 				}
 			}
-			//si c'est une mauvaise rÃ©ponse
+			//si c'est une mauvaise réponse
 			else if (reponse== -1) {
 				try {
 					dao.attribuerScore(dao.getScore(idJoueur, partie.getidPartie())+0,idJoueur, partie.getidPartie());

@@ -2,6 +2,7 @@ package server;
 
 import Kahoot.Partie;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,6 +24,7 @@ public class Checktimer {
                     System.out.println("creation nouvelle partie");
                     Partie maPartie = null;
 					try {
+						maPartie= new Partie();
 						maPartie.avantLancement();
 					} catch (ClassNotFoundException | SQLException e) {
 						// TODO Auto-generated catch block
@@ -48,7 +50,12 @@ public class Checktimer {
                                     return;
                                 }
                                 // ajout d'une connexion en attente à la partie
-                                server.getMaPartie().ajoutConnexion(server.getConnexionsEnAttente().get(0));
+                                try {
+									server.getConnexionsEnAttente().get(0).entrerDansPartie();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
                                 for (int j = 0; j < (server.getConnexionsEnAttente().size() - 1); j++) {
                                     // décalage des connexions en attente vers la gauche
                                     server.getConnexionsEnAttente().set(j, server.getConnexionsEnAttente().get(j + 1));

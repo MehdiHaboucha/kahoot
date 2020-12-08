@@ -6,14 +6,16 @@ import java.net.SocketException;
 import java.sql.SQLException;
 
 import Kahoot.Joueur;
+import Kahoot.Partie;
 import dao.RequetteBddKahoot;
 
-public class Connexion extends Thread {
+public class Connexion extends Thread  {
     private Serveur server;
     private Socket client;
     private BufferedReader reader;
-    private PrintWriter writer;
+    private ObjectOutputStream writer;
     private Joueur joueur= null;
+  
     
     public Connexion(Socket client, Serveur server) throws IOException {
         this.server = server;
@@ -22,43 +24,54 @@ public class Connexion extends Thread {
         InputStreamReader input = new InputStreamReader(this.client.getInputStream());
         reader = new BufferedReader(input);
         // write
-        OutputStreamWriter output = new OutputStreamWriter(this.client.getOutputStream());
-        writer = new PrintWriter(output);
+        OutputStream os = client.getOutputStream();
+        writer = new ObjectOutputStream(os);
     }
    
-    private synchronized void envoyerMessage() {
-        writer.println(this.server.getMaPartie().getidPartie());
+    private synchronized void envoyerPartie() throws IOException {
+    	Integer partie=this.server.getMaPartie().getidPartie();
+        writer.writeObject(partie);
         writer.flush();
     }
     
-    public void partieLance() {
-    	 writer.println("LANCE");
+    public synchronized void partieLance() throws IOException {
+    	 writer.writeObject("LANCE");
          writer.flush();
     }
-    
-    public void envoyerIdJoueur() {
-    	writer.println(this.joueur.getIdJoueur());
+    public synchronized void partieFini() throws IOException {
+   	 writer.writeObject("FINI");
+        writer.flush();
+   }
+    public synchronized void envoyerJoueur() throws IOException {
+    	Joueur joueur=this.joueur;
+    	this.writer.writeObject(joueur);
     	writer.flush();
     }
 
-    private void entrerDansPartie(){
+    public void entrerDansPartie() throws IOException{
         server.getMaPartie().ajoutConnexion(this);
         System.out.println(server.getMaPartie().getMesConnexions());
-        envoyerMessage();
+        envoyerPartie();
+        
+       
     }
-    private synchronized boolean authentification(String pseudo) throws SQLException, ClassNotFoundException {
+    
+	private synchronized boolean authentification(String pseudo) throws SQLException, ClassNotFoundException, IOException {
     
     	 RequetteBddKahoot dao = new RequetteBddKahoot();
     	 Joueur joueur= dao.getJoueurByPseudo(pseudo);
     	 //verifier si le joueur existe dans la base de donnée
         if(joueur != null){
+        		
             //TODO : verif bdd plus info vers appli client comme quoi log plus impossible de se relog
         		//si le pseudo n'est pas dans la partie donc 2 if
         		if (dao.verifierJoueurPartie(joueur.getIdJoueur(),this.server.getMaPartie().getidPartie())==true) {
         			// on l'ajoute à la partie
+        			this.joueur=joueur;
         			dao.addJoueurPartie(joueur.getIdJoueur(),this.server.getMaPartie().getidPartie());
             		//this.joueur= new Joueur(idJoueur,pseudo);
         			System.out.println("Partie"+this.server.getMaPartie().getidPartie());
+        			envoyerJoueur();
         			return true;
 				}
         		
@@ -67,6 +80,9 @@ public class Connexion extends Thread {
         return false;
     }
 
+    public ObjectOutputStream getWriter() {
+        return writer;
+    }
     public Joueur getJoueur() {
 		return joueur;
 	}

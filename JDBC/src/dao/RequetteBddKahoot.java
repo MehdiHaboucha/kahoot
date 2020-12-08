@@ -318,6 +318,18 @@ public class RequetteBddKahoot {
 			}
 		   return joueur;
 }
+    public  String getJoueurById(int idJoueur) throws SQLException {
+  		// 2 create a statement
+      		String joueur = null;
+  		   String requete="SELECT * from joueur Where idJoueur=?";
+  		   PreparedStatement pstmt = connect.prepareStatement(requete);
+  	        pstmt.setInt(1, idJoueur);
+  	        ResultSet res = pstmt.executeQuery();
+  		   while(res.next()) {
+  			    joueur=res.getString("pseudo");
+  			}
+  		   return joueur;
+  }
     public  boolean verifierJoueurPartie(int idJoueur,int idPartie) throws SQLException {
 		// 2 create a statement
     	int cpt=0;

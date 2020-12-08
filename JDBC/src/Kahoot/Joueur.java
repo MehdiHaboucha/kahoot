@@ -1,7 +1,8 @@
-package Kahoot;
+	package Kahoot;
 
+import java.io.Serializable;
 
-public class Joueur {
+public class Joueur implements Serializable {
     private int idJoueur;
     private String login ;
 
